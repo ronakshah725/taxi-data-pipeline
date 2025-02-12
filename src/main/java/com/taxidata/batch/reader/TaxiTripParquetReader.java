@@ -16,9 +16,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.ZoneId;
 
 @Slf4j
 @Component
@@ -30,16 +30,9 @@ public class TaxiTripParquetReader implements ItemReader<TaxiTrip> {
     
     private ParquetReader<Group> reader;
     private long recordCount = 0;
-    private DateTimeFormatter dateTimeFormatter;
 
     @PostConstruct
     public void initialize() throws IOException {
-        try {
-            dateTimeFormatter = DateTimeFormatter.ofPattern(config.getDateTimeFormat());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Invalid date time format: " + config.getDateTimeFormat(), e);
-        }
-        
         Path path = new Path(config.getPath());
         try {
             reader = ParquetReader.builder(new GroupReadSupport(), path)
@@ -75,18 +68,18 @@ public class TaxiTripParquetReader implements ItemReader<TaxiTrip> {
 
     private TaxiTrip convertToTaxiTrip(Group group) {
         return TaxiTrip.builder()
-            .pickupDatetime(getDateTimeValue(group, "pickup_datetime"))
-            .dropoffDatetime(getDateTimeValue(group, "dropoff_datetime"))
-            .passengerCount(getIntegerValue(group, "passenger_count"))
+            .pickupDatetime(getDateTimeValue(group, "tpep_pickup_datetime"))
+            .dropoffDatetime(getDateTimeValue(group, "tpep_dropoff_datetime"))
+            .passengerCount(getLongAsInt(group, "passenger_count"))
             .tripDistance(getBigDecimalValue(group, "trip_distance"))
             .fareAmount(getBigDecimalValue(group, "fare_amount"))
             .totalAmount(getBigDecimalValue(group, "total_amount"))
             .build();
     }
 
-    private Integer getIntegerValue(Group group, String fieldName) {
+    private Integer getLongAsInt(Group group, String fieldName) {
         try {
-            return group.getInteger(fieldName, 0);
+            return (int) group.getLong(fieldName, 0);
         } catch (Exception e) {
             log.warn("Invalid integer value for field {}", fieldName);
             return 0;
@@ -95,9 +88,12 @@ public class TaxiTripParquetReader implements ItemReader<TaxiTrip> {
 
     private LocalDateTime getDateTimeValue(Group group, String fieldName) {
         try {
-            String dateTimeStr = group.getString(fieldName, 0);
-            return LocalDateTime.parse(dateTimeStr, dateTimeFormatter);
-        } catch (DateTimeParseException e) {
+            long microseconds = group.getLong(fieldName, 0);
+            return LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(microseconds / 1000),
+                ZoneId.systemDefault()
+            );
+        } catch (Exception e) {
             log.error("Invalid datetime format for field {}: {}", fieldName, e.getMessage());
             throw e;
         }
