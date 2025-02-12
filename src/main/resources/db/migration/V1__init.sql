@@ -11,5 +11,8 @@ CREATE TABLE taxi_trips (
     updated_at TIMESTAMP NOT NULL
 );
 
+-- Indexes for common queries
 CREATE INDEX idx_taxi_trips_pickup_datetime ON taxi_trips(pickup_datetime);
-CREATE INDEX idx_taxi_trips_dropoff_datetime ON taxi_trips(dropoff_datetime); 
+CREATE INDEX idx_taxi_trips_dropoff_datetime ON taxi_trips(dropoff_datetime);
+CREATE INDEX idx_taxi_trips_fare_amount ON taxi_trips(fare_amount);
+CREATE INDEX idx_taxi_trips_total_amount ON taxi_trips(total_amount); 

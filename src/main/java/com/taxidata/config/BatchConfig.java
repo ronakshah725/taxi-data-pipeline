@@ -1,28 +1,28 @@
 package com.taxidata.config;
 
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
+
 import com.taxidata.batch.processor.TaxiTripProcessor;
 import com.taxidata.batch.reader.TaxiTripParquetReader;
 import com.taxidata.domain.TaxiTrip;
 
-import jakarta.validation.ConstraintViolationException;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
-import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @Configuration
 @RequiredArgsConstructor
@@ -35,6 +35,7 @@ public class BatchConfig {
     private final TaxiTripParquetReader taxiTripReader;
     private final TaxiTripProcessor taxiTripProcessor;
     private final BatchProperties batchProperties;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Bean
     public Job taxiDataImportJob() {
@@ -62,7 +63,7 @@ public class BatchConfig {
             .<TaxiTrip, TaxiTrip>chunk(batchProperties.getJob().getChunkSize(), transactionManager)
             .reader(taxiTripReader)
             .processor(taxiTripProcessor)
-            .writer(loggingWriter())
+            .writer(taxiTripWriter())
             .faultTolerant()
             .retryLimit(batchProperties.getJob().getRetry().getLimit())
             .retry(Exception.class)
@@ -90,13 +91,16 @@ public class BatchConfig {
             .build();
     }
 
+    // TODO move to a separate class
     @Bean
-    public ItemWriter<TaxiTrip> loggingWriter() {
-        return items -> {
-            for (TaxiTrip trip : items) {
-                log.debug("Processing trip: {}", trip);
-            }
-            log.info("Processed {} items", items.size());
-        };
+    public JpaItemWriter<TaxiTrip> taxiTripWriter() {
+        JpaItemWriter<TaxiTrip> writer = new JpaItemWriter<>();
+        writer.setEntityManagerFactory(entityManagerFactory);
+        try {
+            writer.afterPropertiesSet();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize JpaItemWriter", e);
+        }
+        return writer;
     }
 } 

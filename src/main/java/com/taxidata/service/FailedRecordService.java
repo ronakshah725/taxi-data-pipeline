@@ -25,7 +25,7 @@ public class FailedRecordService {
             String recordData = objectMapper.writeValueAsString(trip);
             String recordId = generateRecordId(trip);
             
-            failedRecordRepository.findById(Long.parseLong(recordId))
+            failedRecordRepository.findById(recordId)
                 .ifPresentOrElse(
                     // Update existing record
                     existing -> {
