@@ -10,6 +10,7 @@ spring:
   batch:
     job:
       enabled: false
+      names: ${batch.job.name:taxiDataImportJob}  # Default if not specified
     jdbc:
       initialize-schema: embedded
       platform: postgresql
@@ -20,10 +21,20 @@ spring:
   flyway:
     enabled: false
 
+batch:
+  job:
+    name: taxiDataImportJob
+    step:
+      name: importTaxiDataStep
+    chunk-size: 1000
+    retry:
+      limit: 3
+    skip:
+      limit: 10
+
 input:
   file:
     path: ./data/yellow_tripdata_2024-01.parquet
-    batch-size: 1000
 
 logging:
   level:

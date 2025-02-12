@@ -25,14 +25,25 @@ public class FailedRecordService {
             String recordData = objectMapper.writeValueAsString(trip);
             String recordId = generateRecordId(trip);
             
-            FailedRecord failedRecord = FailedRecord.builder()
-                .recordId(recordId)
-                .recordData(recordData)
-                .errorMessage(errorMessage)
-                .createdAt(LocalDateTime.now())
-                .build();
-                
-            failedRecordRepository.save(failedRecord);
+            failedRecordRepository.findById(Long.parseLong(recordId))
+                .ifPresentOrElse(
+                    // Update existing record
+                    existing -> {
+                        existing.setRecordData(recordData);
+                        existing.setErrorMessage(errorMessage);
+                        failedRecordRepository.save(existing);
+                    },
+                    // Create new record
+                    () -> {
+                        FailedRecord failedRecord = FailedRecord.builder()
+                            .recordId(recordId)
+                            .recordData(recordData)
+                            .errorMessage(errorMessage)
+                            .createdAt(LocalDateTime.now())
+                            .build();
+                        failedRecordRepository.save(failedRecord);
+                    }
+                );
             log.debug("Saved failed record: {}", recordId);
         } catch (Exception e) {
             log.error("Error saving failed record for trip: {}", trip, e);

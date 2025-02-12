@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -22,45 +21,37 @@ public class TaxiTripProcessor implements ItemProcessor<TaxiTrip, TaxiTrip> {
     private final FailedRecordService failedRecordService;
 
     @Override
-    public TaxiTrip process(TaxiTrip trip) {
-        if (!isValidTrip(trip)) {
-            return null;
-        }
+    public TaxiTrip process(TaxiTrip trip) throws Exception {
+        log.debug("Processing trip with raw values: pickup={}, dropoff={}, passengers={}, distance={}, fare={}, total={}", 
+            trip.getPickupDatetime(),
+            trip.getDropoffDatetime(),
+            trip.getPassengerCount(),
+            trip.getTripDistance(),
+            trip.getFareAmount(),
+            trip.getTotalAmount()
+        );
 
-        try {
-            return trip;
-        } catch (Exception e) {
-            log.error("Error processing taxi trip: {}", trip, e);
-            failedRecordService.saveFailedRecord(trip, e.getMessage());
-            return null;
-        }
-    }
-
-    private boolean isValidTrip(TaxiTrip trip) {
         Set<ConstraintViolation<TaxiTrip>> violations = validator.validate(trip);
-        
         if (!violations.isEmpty()) {
             String errorMessage = violations.stream()
                 .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-                .reduce((a, b) -> a + "; " + b)
-                .orElse("Validation failed");
-                
-            log.warn("Invalid taxi trip: {}", errorMessage);
+                .collect(Collectors.joining(", "));
+            log.error("Validation failed for trip: {}", errorMessage);
             failedRecordService.saveFailedRecord(trip, errorMessage);
-            return false;
+            return null;
         }
 
         if (!isValidTripDuration(trip)) {
             failedRecordService.saveFailedRecord(trip, "Invalid trip duration");
-            return false;
+            return null;
         }
 
         if (!isValidAmount(trip)) {
             failedRecordService.saveFailedRecord(trip, "Invalid amount calculations");
-            return false;
+            return null;
         }
 
-        return true;
+        return trip;
     }
 
     private boolean isValidTripDuration(TaxiTrip trip) {
