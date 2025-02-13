@@ -4,6 +4,7 @@
 This project is a data pipeline for processing and analyzing New York City Yellow taxi trip data, leveraging Spring Batch, PostgreSQL, Elasticsearch, and GraphQL technologies.
 
 ## Data Sources
+- Public Source: [NYC Yellow Taxi Monthly Trip Record](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page) 
 - Sample data: `data/yellow_tripdata_2024-01.parquet` (1.08 Million records)
 - Data dictionary: `data_dictionary_trip_records_yellow.pdf`
 
