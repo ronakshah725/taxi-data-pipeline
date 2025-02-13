@@ -25,6 +25,15 @@ Before running the project, ensure you have the following installed:
 
 ## Quick Start
 
+[download the data, click here](https://drive.google.com/file/d/1IL9YjJR4GTrR08-TxAcb_cF-Z-dYJUKK/view?usp=drive_link)
+
+```bash
+mkdir -p data
+
+# Copy the parquet file to the data directory
+cp <path-to-file> <project-root>/data/yellow_tripdata_2024-01.parquet data
+```
+
 ### Running the Application
 The project includes a convenient `run.sh` script for easy deployment. It starts up the docker containers:
 
@@ -40,10 +49,6 @@ chmod +x run.sh
 ```
 
 ### Running Ingestion
-
-```bash
- curl -X POST http://localhost:8080/api/jobs/taxi-import
-```
 
 This will:
 - Start required Docker services
