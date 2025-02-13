@@ -1,4 +1,4 @@
-package com.taxidata.batch.processor;
+package com.taxidata.batch.ingest;
 
 import com.taxidata.domain.TaxiTrip;
 import com.taxidata.service.FailedRecordService;
@@ -21,7 +21,7 @@ public class TaxiTripProcessor implements ItemProcessor<TaxiTrip, TaxiTrip> {
     private final FailedRecordService failedRecordService;
 
     @Override
-    public TaxiTrip process(TaxiTrip trip) throws Exception {
+    public TaxiTrip process(TaxiTrip trip) {
         log.debug("Processing trip with raw values: pickup={}, dropoff={}, passengers={}, distance={}, fare={}, total={}", 
             trip.getPickupDatetime(),
             trip.getDropoffDatetime(),

@@ -20,6 +20,8 @@ spring:
         platform: postgresql
   flyway:
     enabled: true
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URI:http://localhost:9200}
 
 batch:
   job:
@@ -38,5 +40,5 @@ input:
 
 logging:
   level:
-    com.taxidata: INFO
+    com.taxidata: DEBUG
     org.springframework.batch: INFO 

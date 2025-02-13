@@ -4,18 +4,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.JobInstance;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class JobMetricsService {
     
+    private final JobExplorer jobExplorer;
+
     public Map<String, Object> collectJobMetrics(JobExecution jobExecution) {
         Map<String, Object> metrics = new HashMap<>();
         
@@ -61,4 +65,21 @@ public class JobMetricsService {
         }
         return 0;
     }
+
+    public Map<String, Object> getLastJobExecution() {
+        JobInstance lastJobInstance = jobExplorer.getLastJobInstance("taxiDataImportJob");
+        if (lastJobInstance != null) {
+            Optional<JobExecution> jobExecution = jobExplorer.getJobExecutions(lastJobInstance).stream().findFirst();
+            if (jobExecution.isPresent()) {
+                JobExecution execution = jobExecution.get();
+                return Map.of(
+                    "status", execution.getStatus(),
+                    "startTime", execution.getStartTime(),
+                    "endTime", execution.getEndTime()
+                );
+            }
+        }
+        return Map.of();
+    }
+
 }

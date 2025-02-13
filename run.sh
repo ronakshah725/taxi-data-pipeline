@@ -1,18 +1,27 @@
 #!/bin/bash
 
-# Stop and remove existing containers
-docker-compose down -v
+echo "Tearing down and starting containers..."
+docker-compose down -v && docker-compose up -d
 
-# Start PostgreSQL
-docker-compose up -d
+echo "Waiting for containers..."
 
-# Wait for PostgreSQL to be ready
-echo "Waiting for PostgreSQL to be ready..."
-until PGPASSWORD=postgres docker-compose exec -T postgres pg_isready -h localhost -U postgres -d taxidb; do
+wait_for_services() {
+    PGPASSWORD=postgres docker-compose exec -T postgres pg_isready -h localhost -U postgres -d taxidb > /dev/null 2>&1 && \
+    curl -s http://localhost:9200/_cluster/health | grep -q 'status.*\(green\|yellow\)' > /dev/null 2>&1 && \
+    curl -s http://localhost:5601/api/status | grep -q '"overall":{"level":"available"' > /dev/null 2>&1
+}
+
+count=0
+until wait_for_services || [ $count -eq 150 ]; do
     echo -n "."
-    sleep 1
+    sleep 2
+    ((count++))
 done
-echo "PostgreSQL is ready!"
 
-# Build and run the application
-./mvnw clean spring-boot:run 
+if [ $count -eq 150 ]; then
+    echo "containers failed to start within 5 minutes"
+    exit 1
+fi
+
+echo -e "\nAll containers ready! Starting application..."
+./mvnw clean spring-boot:run

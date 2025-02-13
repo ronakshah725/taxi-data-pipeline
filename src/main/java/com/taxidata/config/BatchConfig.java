@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.taxidata.batch.processor.TaxiTripProcessor;
-import com.taxidata.batch.reader.TaxiTripParquetReader;
+import com.taxidata.batch.ingest.TaxiTripProcessor;
+import com.taxidata.batch.ingest.TaxiTripParquetReader;
 import com.taxidata.domain.TaxiTrip;
 
 import jakarta.persistence.EntityManagerFactory;

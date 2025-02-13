@@ -1,4 +1,4 @@
-package com.taxidata.batch.reader;
+package com.taxidata.batch.ingest;
 
 import com.taxidata.config.ParquetReaderConfig;
 import com.taxidata.domain.TaxiTrip;

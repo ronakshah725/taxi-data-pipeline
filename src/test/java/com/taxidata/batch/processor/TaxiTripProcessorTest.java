@@ -1,5 +1,6 @@
 package com.taxidata.batch.processor;
 
+import com.taxidata.batch.ingest.TaxiTripProcessor;
 import com.taxidata.domain.TaxiTrip;
 import com.taxidata.service.FailedRecordService;
 import jakarta.validation.Validation;
@@ -63,12 +64,12 @@ class TaxiTripProcessorTest {
             .totalAmount(new BigDecimal("25.0"))
             .build();
     }
-
+    
     private TaxiTrip createInvalidTrip() {
+        // No passenger count
         return TaxiTrip.builder()
             .pickupDatetime(LocalDateTime.now())
             .dropoffDatetime(LocalDateTime.now().minusHours(1))
-            .passengerCount(-1)
             .tripDistance(BigDecimal.ZERO)
             .fareAmount(new BigDecimal("20.0"))
             .totalAmount(new BigDecimal("10.0"))
