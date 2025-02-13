@@ -24,15 +24,12 @@ public class TaxiTrip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "vendor_id", nullable = true)
+    private Integer vendorId;
     
-    @NotNull(message = "Pickup datetime is required")
-    @Column(name = "pickup_datetime", nullable = false)
-    private LocalDateTime pickupDatetime;
-    
-    @NotNull(message = "Dropoff datetime is required")
-    // @PastOrPresent(message = "Dropoff datetime must not be in the future")
-    @Column(name = "dropoff_datetime", nullable = false)
-    private LocalDateTime dropoffDatetime;
+    @Column(name = "payment_type", nullable = true)
+    private Integer paymentType;
     
     @NotNull(message = "Passenger count is required")
     // @Min(value = 1, message = "Passenger count must be at least 1")

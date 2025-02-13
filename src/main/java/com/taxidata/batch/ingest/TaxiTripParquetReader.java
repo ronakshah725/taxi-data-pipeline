@@ -16,9 +16,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Slf4j
 @Component
@@ -68,8 +65,8 @@ public class TaxiTripParquetReader implements ItemReader<TaxiTrip> {
 
     private TaxiTrip convertToTaxiTrip(Group group) {
         return TaxiTrip.builder()
-            .pickupDatetime(getDateTimeValue(group, "tpep_pickup_datetime"))
-            .dropoffDatetime(getDateTimeValue(group, "tpep_dropoff_datetime"))
+            .vendorId(group.getInteger("VendorID", 0))
+            .paymentType(getLongAsInt(group, "payment_type"))
             .passengerCount(getLongAsInt(group, "passenger_count"))
             .tripDistance(getBigDecimalValue(group, "trip_distance"))
             .fareAmount(getBigDecimalValue(group, "fare_amount"))
@@ -83,19 +80,6 @@ public class TaxiTripParquetReader implements ItemReader<TaxiTrip> {
         } catch (Exception e) {
             log.warn("Invalid integer value for field {}", fieldName);
             return 0;
-        }
-    }
-
-    private LocalDateTime getDateTimeValue(Group group, String fieldName) {
-        try {
-            long microseconds = group.getLong(fieldName, 0);
-            return LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(microseconds / 1000),
-                ZoneId.systemDefault()
-            );
-        } catch (Exception e) {
-            log.error("Invalid datetime format for field {}: {}", fieldName, e.getMessage());
-            throw e;
         }
     }
 

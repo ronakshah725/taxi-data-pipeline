@@ -11,16 +11,13 @@ type Query {
 }
 
 input TripFilter {
-    timeRange: TimeRangeInput
+    vendorId: Int
+    paymentType: Int
     minFare: BigDecimal
     maxFare: BigDecimal
     passengerCount: Int
 }
 
-input TimeRangeInput {
-    startDate: DateTime!
-    endDate: DateTime!
-}
 
 input PageInput {
     page: Int!
@@ -37,8 +34,8 @@ type TripPage {
 
 type Trip {
     id: ID!
-    pickupDatetime: DateTime!
-    dropoffDatetime: DateTime!
+    vendorId: Int!
+    paymentType: Int!
     passengerCount: Int!
     tripDistance: BigDecimal!
     fareAmount: BigDecimal!

@@ -46,5 +46,5 @@ input:
 
 logging:
   level:
-    com.taxidata: DEBUG
+    com.taxidata: INFO
     org.springframework.batch: INFO

@@ -16,7 +16,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @ExtendWith(MockitoExtension.class)
 class TaxiTripProcessorTest {
@@ -56,8 +55,8 @@ class TaxiTripProcessorTest {
 
     private TaxiTrip createValidTrip() {
         return TaxiTrip.builder()
-            .pickupDatetime(LocalDateTime.now().minusHours(1))
-            .dropoffDatetime(LocalDateTime.now())
+            .vendorId(1)
+            .paymentType(1)
             .passengerCount(2)
             .tripDistance(new BigDecimal("5.5"))
             .fareAmount(new BigDecimal("20.0"))
@@ -68,8 +67,8 @@ class TaxiTripProcessorTest {
     private TaxiTrip createInvalidTrip() {
         // No passenger count
         return TaxiTrip.builder()
-            .pickupDatetime(LocalDateTime.now())
-            .dropoffDatetime(LocalDateTime.now().minusHours(1))
+            .vendorId(1)
+            .paymentType(1)
             .tripDistance(BigDecimal.ZERO)
             .fareAmount(new BigDecimal("20.0"))
             .totalAmount(new BigDecimal("10.0"))

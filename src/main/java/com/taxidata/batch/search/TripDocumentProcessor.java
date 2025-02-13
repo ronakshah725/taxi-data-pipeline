@@ -10,22 +10,16 @@ public class TripDocumentProcessor implements ItemProcessor<TaxiTrip, TripDocume
     
     @Override
     public TripDocument process(TaxiTrip trip) {
-        // TODO: Handle null trip
-        if (trip == null) {
-            return null;
-        }
-
         TripDocument document = new TripDocument();
         
         document.setId(trip.getId() != null ? trip.getId().toString() : null);
         
-        document.setPickupDatetime(trip.getPickupDatetime());
-        document.setDropoffDatetime(trip.getDropoffDatetime());
+        document.setVendorId(trip.getVendorId());
+        document.setPaymentType(trip.getPaymentType());
         document.setPassengerCount(trip.getPassengerCount());
         document.setTripDistance(trip.getTripDistance());
         document.setFareAmount(trip.getFareAmount());
         document.setTotalAmount(trip.getTotalAmount());
-        
         document.setVersion(trip.getVersion());
         document.setCreatedDate(trip.getCreatedAt());
         document.setLastModifiedDate(trip.getUpdatedAt());

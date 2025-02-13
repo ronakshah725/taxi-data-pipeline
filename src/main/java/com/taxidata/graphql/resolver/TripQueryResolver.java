@@ -1,7 +1,6 @@
 package com.taxidata.graphql.resolver;
 
 import com.taxidata.domain.document.TripDocument;
-import com.taxidata.graphql.type.input.TimeRangeInput;
 import com.taxidata.graphql.type.input.TripFilter;
 import com.taxidata.graphql.type.input.PageInput;
 import com.taxidata.service.TripElasticsearchService;
@@ -13,7 +12,6 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -47,28 +45,12 @@ public class TripQueryResolver {
             pageInput = new PageInput(0, 20);
         }
 
-        // Detailed logging
-        LocalDateTime startDate = filter.getTimeRange().getStartDate();
-        LocalDateTime endDate = filter.getTimeRange().getEndDate();
-
-        System.out.println("Search Parameters:");
-        System.out.println("Start Date: " + startDate);
-        System.out.println("Start Date Type: " + startDate.getClass());
-        System.out.println("End Date: " + endDate);
-        System.out.println("End Date Type: " + endDate.getClass());
-
-        if (filter.getTimeRange() == null) {
-            TimeRangeInput defaultRange = new TimeRangeInput();
-            defaultRange.setStartDate(LocalDateTime.of(1970, 1, 1, 0, 0));
-            defaultRange.setEndDate(LocalDateTime.now());
-            filter.setTimeRange(defaultRange);
-        }
         return searchService.searchTrips(
-            filter.getTimeRange().getStartDate(),
-            filter.getTimeRange().getEndDate(),
+            filter.getVendorId(),
+            filter.getPaymentType(),
             filter.getMinFare(),
             filter.getMaxFare(),
-            "pickupDatetime",
+            "fareAmount",
             Sort.Direction.DESC,
             pageInput.getPage(),
             pageInput.getSize()

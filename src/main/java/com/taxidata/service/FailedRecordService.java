@@ -27,13 +27,11 @@ public class FailedRecordService {
             
             failedRecordRepository.findById(recordId)
                 .ifPresentOrElse(
-                    // Update existing record
                     existing -> {
                         existing.setRecordData(recordData);
                         existing.setErrorMessage(errorMessage);
                         failedRecordRepository.save(existing);
                     },
-                    // Create new record
                     () -> {
                         FailedRecord failedRecord = FailedRecord.builder()
                             .recordId(recordId)
@@ -51,8 +49,8 @@ public class FailedRecordService {
     }
 
     private String generateRecordId(TaxiTrip trip) {
-        return String.format("%s_%d",
-            trip.getPickupDatetime().toLocalDate(),
+        return String.format("%d_%d",
+            trip.getId(),
             System.currentTimeMillis());
     }
 }

@@ -31,8 +31,8 @@ public class TripElasticsearchService {
     }
 
     public Page<TripDocument> searchTrips(
-            LocalDateTime startDate,
-            LocalDateTime endDate,
+            Integer vendorId,
+            Integer paymentType,
             BigDecimal minFare,
             BigDecimal maxFare,
             String sortField,
@@ -41,13 +41,6 @@ public class TripElasticsearchService {
             int size) {
         
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
-        return searchRepository.searchTrips(startDate, endDate, minFare, maxFare, pageable);
-    }
-
-    public Page<TripDocument> findTrips(
-            LocalDateTime startDate,
-            LocalDateTime endDate,
-            Pageable pageable) {
-        return searchRepository.findByPickupDatetimeBetween(startDate, endDate, pageable);
+        return searchRepository.searchTrips(vendorId, paymentType, minFare, maxFare, pageable);
     }
 }

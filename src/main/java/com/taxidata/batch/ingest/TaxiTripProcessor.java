@@ -22,9 +22,9 @@ public class TaxiTripProcessor implements ItemProcessor<TaxiTrip, TaxiTrip> {
 
     @Override
     public TaxiTrip process(TaxiTrip trip) {
-        log.debug("Processing trip with raw values: pickup={}, dropoff={}, passengers={}, distance={}, fare={}, total={}", 
-            trip.getPickupDatetime(),
-            trip.getDropoffDatetime(),
+        log.debug("Processing trip with raw values: vendorId={}, paymentType={}, passengers={}, distance={}, fare={}, total={}", 
+            trip.getVendorId(),
+            trip.getPaymentType(),
             trip.getPassengerCount(),
             trip.getTripDistance(),
             trip.getFareAmount(),

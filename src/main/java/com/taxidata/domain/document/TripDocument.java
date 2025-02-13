@@ -19,11 +19,11 @@ public class TripDocument {
     @Id
     private String id;
 
-    @Field(type = FieldType.Date, format = {}, pattern = DATE_TIME_FORMAT)
-    private LocalDateTime pickupDatetime;
+    @Field(type = FieldType.Integer)
+    private Integer vendorId;
 
-    @Field(type = FieldType.Date, format = {}, pattern = DATE_TIME_FORMAT)
-    private LocalDateTime dropoffDatetime;
+    @Field(type = FieldType.Integer)
+    private Integer paymentType;
 
     @Field(type = FieldType.Integer)
     private Integer passengerCount;

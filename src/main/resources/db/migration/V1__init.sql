@@ -1,7 +1,7 @@
 CREATE TABLE taxi_trips (
     id BIGSERIAL PRIMARY KEY,
-    pickup_datetime TIMESTAMP NOT NULL,
-    dropoff_datetime TIMESTAMP NOT NULL,
+    vendor_id INTEGER,
+    payment_type INTEGER,
     passenger_count INTEGER NOT NULL,
     trip_distance DECIMAL(10,2) NOT NULL,
     fare_amount DECIMAL(10,2) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE taxi_trips (
 );
 
 -- Indexes for common queries
-CREATE INDEX idx_taxi_trips_pickup_datetime ON taxi_trips(pickup_datetime);
-CREATE INDEX idx_taxi_trips_dropoff_datetime ON taxi_trips(dropoff_datetime);
+CREATE INDEX idx_taxi_trips_vendor_id ON taxi_trips(vendor_id);
+CREATE INDEX idx_taxi_trips_payment_type ON taxi_trips(payment_type);
 CREATE INDEX idx_taxi_trips_fare_amount ON taxi_trips(fare_amount);
 CREATE INDEX idx_taxi_trips_total_amount ON taxi_trips(total_amount); 

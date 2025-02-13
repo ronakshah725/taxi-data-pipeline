@@ -5,7 +5,8 @@ import java.math.BigDecimal;
 
 @Data
 public class TripFilter {
-    private TimeRangeInput timeRange;
+    private Integer vendorId;
+    private Integer paymentType;
     private BigDecimal minFare;
     private BigDecimal maxFare;
     private Integer passengerCount;

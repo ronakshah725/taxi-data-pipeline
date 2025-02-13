@@ -91,7 +91,6 @@ public class BatchConfig {
             .build();
     }
 
-    // TODO move to a separate class
     @Bean
     public JpaItemWriter<TaxiTrip> taxiTripWriter() {
         JpaItemWriter<TaxiTrip> writer = new JpaItemWriter<>();
