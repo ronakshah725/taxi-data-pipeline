@@ -11,9 +11,9 @@ import org.springframework.stereotype.Controller;
 
 import com.taxidata.domain.document.TripDocument;
 import com.taxidata.graphql.type.PaymentAnalytics;
-import com.taxidata.graphql.type.TripInputDto.PageInput;
-import com.taxidata.graphql.type.TripInputDto.TripFilter;
-import com.taxidata.graphql.type.TripInputDto.TripSort;
+import com.taxidata.graphql.type.TripQueryTypes.PageInput;
+import com.taxidata.graphql.type.TripQueryTypes.TripFilter;
+import com.taxidata.graphql.type.TripQueryTypes.TripSort;
 import com.taxidata.graphql.type.VendorStats;
 import com.taxidata.service.JobMetricsService;
 import com.taxidata.service.TripElasticsearchService;

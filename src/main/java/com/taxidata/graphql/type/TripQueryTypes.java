@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.data.domain.Sort;
 
-public class TripInputDto {
+public class TripQueryTypes {
 
     @Data
     public static class TripFilter {
@@ -41,7 +41,7 @@ public class TripInputDto {
         FARE_AMOUNT,
         TRIP_DISTANCE,
         TOTAL_AMOUNT,
-        PASSENGER_COUNT;
+        PASSENGER_COUNT
     }
 
     public enum SortDirection {

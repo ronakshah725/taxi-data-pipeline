@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class JobController {
 
     private final JobLauncher jobLauncher;
-    // private final JobExplorer jobExplorer;
     private final Job taxiDataImportJob;
 
     @PostMapping("/taxi-import")
