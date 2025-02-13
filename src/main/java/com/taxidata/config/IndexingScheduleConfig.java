@@ -22,18 +22,13 @@ public class IndexingScheduleConfig {
     private final Job elasticsearchIndexingJob;
     private final JobExplorer jobExplorer;
 
-    private static final int DELAY_SECONDS = 180;
+    private static final int DELAY_SECONDS = 360;
     private static final int LAST_SYNC_SECONDS = 2 * DELAY_SECONDS;
 
     private LocalDateTime lastSuccessfulSync = LocalDateTime.now().minusSeconds(LAST_SYNC_SECONDS);
 
     @Scheduled(fixedDelay = DELAY_SECONDS, timeUnit = TimeUnit.SECONDS)
     public void triggerIndexing() {
-        if (!recentJobsStillRunning()) {
-            log.info("Recent indexing job still running. Skipping this execution.");
-            return;
-        }
-
         try {
             JobParameters params = new JobParametersBuilder()
                     .addString("lastSync", lastSuccessfulSync.toString())

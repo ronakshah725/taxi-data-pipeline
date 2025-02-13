@@ -47,4 +47,5 @@ input:
 logging:
   level:
     com.taxidata: DEBUG
-    org.springframework.batch: DEBUG
+    org.springframework.batch: INFO
+    org.elasticsearch.client: DEBUG

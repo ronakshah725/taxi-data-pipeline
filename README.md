@@ -39,21 +39,16 @@ chmod +x run.sh
 ./mvnw clean spring-boot:run
 ```
 
+### Running Ingestion
+
+```bash
+ curl -X POST http://localhost:8080/api/jobs/taxi-import
+```
+
 This will:
 - Start required Docker services
 - Build the application
 - Launch the data pipeline
-
-### Manual Build and Run
-Alternatively, you can use Maven:
-
-```bash
-# Clean and compile
-mvn clean package
-
-# Run the application
-java -jar target/taxi-data-pipeline-1.0-SNAPSHOT.jar
-```
 
 ## Testing
 
