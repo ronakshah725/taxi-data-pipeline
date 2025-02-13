@@ -1,6 +1,5 @@
 package com.taxidata.service;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
 import com.taxidata.domain.document.TripDocument;
 import com.taxidata.graphql.type.*;

@@ -24,4 +24,3 @@ if [ $count -eq 150 ]; then
 fi
 
 echo -e "\nAll containers ready! Starting application..."
-./mvnw clean spring-boot:run
