@@ -41,26 +41,6 @@ public class TaxiTripProcessor implements ItemProcessor<TaxiTrip, TaxiTrip> {
             return null;
         }
 
-        if (!isValidTripDuration(trip)) {
-            failedRecordService.saveFailedRecord(trip, "Invalid trip duration");
-            return null;
-        }
-
-        if (!isValidAmount(trip)) {
-            failedRecordService.saveFailedRecord(trip, "Invalid amount calculations");
-            return null;
-        }
-
         return trip;
-    }
-
-    private boolean isValidTripDuration(TaxiTrip trip) {
-        return trip.getPickupDatetime() != null 
-            && trip.getDropoffDatetime() != null
-            && !trip.getDropoffDatetime().isBefore(trip.getPickupDatetime());
-    }
-
-    private boolean isValidAmount(TaxiTrip trip) {
-        return trip.getTotalAmount().compareTo(trip.getFareAmount()) >= 0;
     }
 } 

@@ -4,9 +4,10 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
+  # CAUTION: Use only in development mode. When dev profile enabled, cleans up the database on startup
+  # jpa:
+  #   hibernate:
+  #     ddl-auto: create-drop
   batch:
     job:
       enabled: false
@@ -19,13 +20,6 @@ spring:
         platform: postgresql
   flyway:
     enabled: true
-    clean:
-      disabled: false
-    url: ${spring.datasource.url}
-    user: ${spring.datasource.username}
-    password: ${spring.datasource.password}
-    locations: classpath:db/migration
-    clean-on-validation-error: true
 
 batch:
   job:
@@ -44,5 +38,5 @@ input:
 
 logging:
   level:
-    com.taxidata: DEBUG
+    com.taxidata: INFO
     org.springframework.batch: INFO 
