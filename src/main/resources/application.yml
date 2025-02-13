@@ -22,6 +22,12 @@ spring:
     enabled: true
   elasticsearch:
     uris: ${ELASTICSEARCH_URI:http://localhost:9200}
+  graphql:
+    path: /graphql
+    schema:
+      locations: classpath:graphql/**/
+    graphiql:
+      enabled: true  # Enable GraphiQL UI for testing
 
 batch:
   job:
@@ -41,4 +47,4 @@ input:
 logging:
   level:
     com.taxidata: DEBUG
-    org.springframework.batch: INFO 
+    org.springframework.batch: INFO

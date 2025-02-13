@@ -1,0 +1,62 @@
+scalar DateTime
+scalar BigDecimal
+
+type Query {
+    searchTrips(
+        filter: TripFilter
+        page: PageInput = {page: 0, size: 20}
+    ): TripPage!
+
+    indexStatus: IndexStatus!
+}
+
+input TripFilter {
+    timeRange: TimeRangeInput
+    minFare: BigDecimal
+    maxFare: BigDecimal
+    passengerCount: Int
+}
+
+input TimeRangeInput {
+    startDate: DateTime!
+    endDate: DateTime!
+}
+
+input PageInput {
+    page: Int!
+    size: Int!
+}
+
+type TripPage {
+    content: [Trip!]!
+    totalElements: Int!
+    totalPages: Int!
+    number: Int!
+    size: Int!
+}
+
+type Trip {
+    id: ID!
+    pickupDatetime: DateTime!
+    dropoffDatetime: DateTime!
+    passengerCount: Int!
+    tripDistance: BigDecimal!
+    fareAmount: BigDecimal!
+    totalAmount: BigDecimal!
+    version: Int
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type IndexStatus {
+    documentCount: Int!
+    lastSyncedAt: DateTime
+    lastJobExecution: JobExecution
+}
+
+type JobExecution {
+    startTime: DateTime
+    endTime: DateTime
+    status: String!
+    exitCode: String!
+}

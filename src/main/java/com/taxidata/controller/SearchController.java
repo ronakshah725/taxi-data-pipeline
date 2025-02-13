@@ -5,8 +5,6 @@ import com.taxidata.service.TripElasticsearchService;
 import com.taxidata.service.JobMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,8 +23,6 @@ import java.util.Map;
 public class SearchController {
     private final TripElasticsearchService searchService;
     private final JobMetricsService jobMetricsService;
-    private final JobExplorer jobExplorer;
-
 
     @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> getHealth() {
@@ -69,21 +65,5 @@ public class SearchController {
         return ResponseEntity.ok(searchService.findTrips(
             startDate, endDate,
             org.springframework.data.domain.PageRequest.of(page, size, Sort.by(sortDir, sortField))));
-    }
-
-    @GetMapping("/status")
-    public Map<String, Object> getIndexingStatus() {
-        Map<String, Object> status = new HashMap<>();
-        
-        var runningJobs = jobExplorer.findRunningJobExecutions("elasticsearchIndexingJob");
-        status.put("isRunning", !runningJobs.isEmpty());
-        
-        if (!runningJobs.isEmpty()) {
-            JobExecution currentJob = runningJobs.iterator().next();
-            status.put("startTime", currentJob.getStartTime());
-            status.put("stepExecutions", currentJob.getStepExecutions().size());
-        }
-        
-        return status;
     }
 } 
