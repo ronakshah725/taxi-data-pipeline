@@ -2,14 +2,22 @@ scalar DateTime
 scalar BigDecimal
 
 type Query {
+    # Search API with sorting, filtering, pagination
     searchTrips(
         filter: TripFilter
+        sort: TripSort
         page: PageInput = {page: 0, size: 20}
     ): TripPage!
 
+    # Analytics APIs
+    paymentAnalytics: PaymentAnalytics
+    vendorStats: VendorStats
+
+    # Existing status query
     indexStatus: IndexStatus!
 }
 
+# Input Types
 input TripFilter {
     vendorId: Int
     paymentType: Int
@@ -18,12 +26,30 @@ input TripFilter {
     passengerCount: Int
 }
 
+input TripSort {
+    field: TripSortField!
+    direction: SortDirection!
+}
 
 input PageInput {
     page: Int!
     size: Int!
 }
 
+# Enums
+enum TripSortField {
+    FARE_AMOUNT
+    TRIP_DISTANCE
+    TOTAL_AMOUNT
+    PASSENGER_COUNT
+}
+
+enum SortDirection {
+    ASC
+    DESC
+}
+
+# Result Types
 type TripPage {
     content: [Trip!]!
     totalElements: Int!
@@ -45,6 +71,36 @@ type Trip {
     updatedAt: DateTime!
 }
 
+# Analytics Types
+type PaymentAnalytics {
+    paymentTypeCounts: [PaymentTypeCount!]!
+    averageFareByPaymentType: [PaymentTypeFare!]!
+}
+
+type PaymentTypeCount {
+    paymentType: Int!
+    count: Int!
+    totalRevenue: BigDecimal!
+}
+
+type PaymentTypeFare {
+    paymentType: Int!
+    averageFare: BigDecimal!
+}
+
+type VendorStats {
+    vendorMetrics: [VendorMetric!]!
+}
+
+type VendorMetric {
+    vendorId: Int!
+    totalTrips: Int!
+    averageFare: BigDecimal!
+    totalRevenue: BigDecimal!
+    averagePassengers: Float!
+}
+
+# Existing Status Types
 type IndexStatus {
     documentCount: Int!
     lastSyncedAt: DateTime

@@ -1,4 +1,4 @@
-package com.taxidata.controller;
+package com.taxidata.resources;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
